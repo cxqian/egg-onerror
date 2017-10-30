@@ -18,24 +18,15 @@ module.exports = app => {
     if (config.appErrorFilter && !config.appErrorFilter(err, ctx)) return;
 
     const status = detectStatus(err);
+    let logger = ctx.logger || app.logger
     // 5xx
     if (status >= 500) {
-      try {
-        ctx.logger.error(err);
-      } catch (ex) {
-        app.logger.error(err);
-        app.logger.error(ex);
-      }
+      logger.error(err);
       return;
     }
 
     // 4xx
-    try {
-      ctx.logger.warn(err);
-    } catch (ex) {
-      app.logger.warn(err);
-      app.logger.error(ex);
-    }
+    logger.error(err);
   });
 
   onerror(app, {
